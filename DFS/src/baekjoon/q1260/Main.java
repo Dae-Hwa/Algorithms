@@ -21,15 +21,18 @@ stack.push(4.pop)
 public class Main {
 
 	public static void main(String[] args) {
-		int n = 4;
+		int n = 5;
 		Graph graph = new Graph(n);
 
+		graph.setAdjacent(5, 4);
+		graph.setAdjacent(5, 2);
 		graph.setAdjacent(1, 2);
-		graph.setAdjacent(1, 3);
-		graph.setAdjacent(1, 4);
-		graph.setAdjacent(2, 4);
 		graph.setAdjacent(3, 4);
-		graph.dfs(1);
+		graph.setAdjacent(3, 1);
+		
+		System.out.println(graph);
+		
+		graph.dfs(3);
 		
 		System.out.println(graph.getResult());
 	}
@@ -80,7 +83,7 @@ class Graph {
 	}
 
 	private void pushAdjacent(LinkedList<Integer> stack, LinkedList<Integer> adjacent) {
-		
+		adjacent.sort(null);
 		for (int i = adjacent.size()-1; i >= 0; i--) {
 			stack.push(adjacent.get(i));
 		}
@@ -91,18 +94,3 @@ class Graph {
 	}
 }
 
-class Vertax {
-	int vertax;
-	boolean walked;
-
-	public Vertax(int vertax, boolean walked) {
-		this.vertax = vertax;
-		this.walked = walked;
-	}
-
-	@Override
-	public String toString() {
-		return "Vertax [vertax=" + vertax + ", walked=" + walked + "]";
-	}
-
-}
