@@ -1,5 +1,8 @@
 package baekjoon.q1260;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -7,18 +10,40 @@ import java.util.Arrays;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		int[] condition = Arrays.stream(br.readLine().split(" ")).mapToInt(x -> Integer.parseInt(x)).toArray();
+		int n = condition[0];
+		int index = condition[2];
+		int[] vertaxes;
+		Graph graph = new Graph(n);
+		
+		for (int i = 0; i < n; i++) {
+			vertaxes = Arrays.stream(br.readLine().split(" ")).mapToInt(x -> Integer.parseInt(x)).toArray();
+			graph.setAdjacent(vertaxes[0], vertaxes[1]);
+			System.out.println(Arrays.toString(vertaxes));
+		}
+
+		for (int i = 0; i < n; i++) {
+			graph.sortGraph(i);
+		}
+		graph.dfs(index);
+		graph.printResult();
+		graph.bfs(index);
+		graph.printResult();
+
 	}
 }
 
 class Graph {
 	private ArrayList<Integer>[] graph;
-	private int[][] arrGraph;
 	private ArrayDeque<Integer> stack;
 	private ArrayDeque<Integer> queue;
 	private boolean[] walked;
 	private ArrayList<Integer> result;
 
+	@SuppressWarnings("unchecked")
 	public Graph(int n) {
 		graph = (ArrayList<Integer>[]) Array.newInstance(ArrayList.class, n);
 
@@ -28,18 +53,9 @@ class Graph {
 
 	}
 
-	public Graph(int n, int m) {
-		arrGraph = new int[n][m];
-	}
-
 	public void setAdjacent(int vertax, int adjacent) {
 		graph[vertax - 1].add(adjacent);
 		graph[adjacent - 1].add(vertax);
-	}
-
-	public void setAdjacentArr(int vertax, int adjacent) {
-		arrGraph[vertax - 1][adjacent - 1] = 1;
-		arrGraph[adjacent - 1][vertax - 1] = 1;
 	}
 
 	public void sortGraph(int i) {
@@ -52,6 +68,7 @@ class Graph {
 		walked = new boolean[graph.length];
 
 		executeDfs(index);
+
 		return result;
 	}
 
@@ -67,8 +84,12 @@ class Graph {
 		return result;
 	}
 
-	public ArrayList<Integer> getResult() {
-		return result;
+	public void printResult() {
+		StringBuffer sb = new StringBuffer();
+		for (int i : result) {
+			sb.append(i + " ");
+		}
+		System.out.println((sb.toString()).trim());
 	}
 
 	private void executeDfs(int index) {
@@ -83,15 +104,13 @@ class Graph {
 		}
 
 		if (!stack.isEmpty()) {
-			int vertax = stack.pop();
-			executeDfs(vertax);
+			executeDfs(stack.pop());
 		}
 	}
 
 	private Integer executeBfs(int index) {
 		if (!walked[index - 1] && !graph[index - 1].isEmpty()) {
 			enqueueAdjacent(queue, graph[index - 1]);
-
 			walked[index - 1] = true;
 			result.add(index);
 		}
@@ -110,10 +129,4 @@ class Graph {
 			queue.offer(adjacent.get(i));
 		}
 	}
-
-	@Override
-	public String toString() {
-		return "Graph [graph=" + Arrays.toString(graph) + "]";
-	}
-
 }
