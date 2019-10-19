@@ -1,27 +1,15 @@
 package baekjoon.q1260;
 
+import java.lang.reflect.Array;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 
-/*
- * 1{2 3 4}
-2 {4}
-3 {4}
-++dfs
-stack<1>
-	++pushAdjacent
-정점안에있는건 역순으로 넣어야함 4->3->2
-stack.push(1.pop) // stack<2,3,4>
-1=true
-stack.push(2.pop) // stack<4,3,4>
-2=true
-stack.push(4.pop)
- */
 public class Main {
 
 	public static void main(String[] args) {
 		int n = 5;
+		int m = 3;
 		Graph graph = new Graph(n);
 
 		graph.setAdjacent(5, 4);
@@ -30,25 +18,30 @@ public class Main {
 		graph.setAdjacent(3, 4);
 		graph.setAdjacent(3, 1);
 
-		System.out.println(graph);
+		for (int i = 0; i < n; i++) {
+			graph.sortGraph(i);
+		}
 
-		graph.dfs(3);
+//		graph.dfs(m);
 
+		graph.bfs(m);
 		System.out.println(graph.getResult());
 	}
 }
 
 class Graph {
-	private LinkedList<Integer>[] graph;
-	private LinkedList<Integer> stack = new LinkedList<>();
+	private ArrayList<Integer>[] graph;
+	private int[][] arrGraph;
+	private ArrayDeque<Integer> stack;
+	private ArrayDeque<Integer> queue;
 	private boolean[] walked;
-	private ArrayList<Integer> result = new ArrayList<>();
+	private ArrayList<Integer> result;
 
 	public Graph(int n) {
-		graph = new LinkedList[n];
-		walked = new boolean[n];
+		graph = (ArrayList<Integer>[]) Array.newInstance(ArrayList.class, n);
+
 		for (int i = 0; i < n; i++) {
-			graph[i] = new LinkedList<Integer>();
+			graph[i] = new ArrayList<Integer>();
 		}
 
 	}
@@ -56,14 +49,31 @@ class Graph {
 	public void setAdjacent(int vertax, int adjacent) {
 		graph[vertax - 1].add(adjacent);
 		graph[adjacent - 1].add(vertax);
+	}
 
-		graph[vertax - 1].sort(null);
-		graph[adjacent - 1].sort(null);
+
+	public void sortGraph(int i) {
+		graph[i].sort(null);
 	}
 
 	public ArrayList<Integer> dfs(int index) {
-		result.add(index);
+		stack = new ArrayDeque<Integer>();
+		result = new ArrayList<Integer>();
+		walked = new boolean[graph.length];
+
 		executeDfs(index);
+		return result;
+	}
+
+	public ArrayList<Integer> bfs(Integer index) {
+		queue = new ArrayDeque<Integer>();
+		result = new ArrayList<Integer>();
+		walked = new boolean[graph.length];
+
+		while (index != null) {
+			index = executeBfs(index);
+		}
+
 		return result;
 	}
 
@@ -88,22 +98,26 @@ class Graph {
 		}
 	}
 
-	private void executeBfs(int index) {
-		if (!walked[index - 1]) {
-			if (graph[index - 1].isEmpty()) {
-				return;
-			}
+	private Integer executeBfs(int index) {
+		if (!walked[index - 1] && !graph[index - 1].isEmpty()) {
+			enqueueAdjacent(queue, graph[index - 1]);
 
-			pushAdjacent(queue, graph[index - 1]);
 			walked[index - 1] = true;
 			result.add(index);
 		}
+
+		return queue.poll();
 	}
 
 	private void pushAdjacent(ArrayDeque<Integer> stack, ArrayList<Integer> adjacent) {
-		adjacent.sort(null);
 		for (int i = adjacent.size() - 1; i >= 0; i--) {
 			stack.push(adjacent.get(i));
+		}
+	}
+
+	private void enqueueAdjacent(ArrayDeque<Integer> queue, ArrayList<Integer> adjacent) {
+		for (int i = 0; i < adjacent.size(); i++) {
+			queue.offer(adjacent.get(i));
 		}
 	}
 
