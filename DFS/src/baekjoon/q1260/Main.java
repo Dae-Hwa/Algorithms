@@ -8,24 +8,6 @@ import java.util.Arrays;
 public class Main {
 
 	public static void main(String[] args) {
-		int n = 5;
-		int m = 3;
-		Graph graph = new Graph(n);
-
-		graph.setAdjacent(5, 4);
-		graph.setAdjacent(5, 2);
-		graph.setAdjacent(1, 2);
-		graph.setAdjacent(3, 4);
-		graph.setAdjacent(3, 1);
-
-		for (int i = 0; i < n; i++) {
-			graph.sortGraph(i);
-		}
-
-//		graph.dfs(m);
-
-		graph.bfs(m);
-		System.out.println(graph.getResult());
 	}
 }
 
@@ -46,11 +28,19 @@ class Graph {
 
 	}
 
+	public Graph(int n, int m) {
+		arrGraph = new int[n][m];
+	}
+
 	public void setAdjacent(int vertax, int adjacent) {
 		graph[vertax - 1].add(adjacent);
 		graph[adjacent - 1].add(vertax);
 	}
 
+	public void setAdjacentArr(int vertax, int adjacent) {
+		arrGraph[vertax - 1][adjacent - 1] = 1;
+		arrGraph[adjacent - 1][vertax - 1] = 1;
+	}
 
 	public void sortGraph(int i) {
 		graph[i].sort(null);
