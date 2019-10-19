@@ -72,29 +72,38 @@ class Graph {
 	}
 
 	private void executeDfs(int index) {
-		System.out.println("current" + index);
-		
-		if (!graph[index - 1].isEmpty()) {
+		if (!walked[index - 1]) {
+			if (graph[index - 1].isEmpty()) {
+				return;
+			}
+
 			pushAdjacent(stack, graph[index - 1]);
-			System.out.println("asdf");
+			walked[index - 1] = true;
+			result.add(index);
 		}
-		System.out.println(stack);
 
 		if (!stack.isEmpty()) {
 			int vertax = stack.pop();
-			if (!walked[vertax - 1]) {
-				walked[vertax - 1] = true;
-				result.add(vertax);
-				executeDfs(vertax);
-			}
+			executeDfs(vertax);
 		}
 	}
 
-	private void pushAdjacent(LinkedList<Integer> stack, LinkedList<Integer> adjacent) {
+	private void executeBfs(int index) {
+		if (!walked[index - 1]) {
+			if (graph[index - 1].isEmpty()) {
+				return;
+			}
+
+			pushAdjacent(queue, graph[index - 1]);
+			walked[index - 1] = true;
+			result.add(index);
+		}
+	}
+
+	private void pushAdjacent(ArrayDeque<Integer> stack, ArrayList<Integer> adjacent) {
 		adjacent.sort(null);
 		for (int i = adjacent.size() - 1; i >= 0; i--) {
 			stack.push(adjacent.get(i));
-			System.out.println(adjacent.get(i));
 		}
 	}
 
