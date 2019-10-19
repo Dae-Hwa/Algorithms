@@ -29,11 +29,11 @@ public class Main {
 		graph.setAdjacent(1, 2);
 		graph.setAdjacent(3, 4);
 		graph.setAdjacent(3, 1);
-		
+
 		System.out.println(graph);
-		
+
 		graph.dfs(3);
-		
+
 		System.out.println(graph.getResult());
 	}
 }
@@ -55,27 +55,35 @@ class Graph {
 
 	public void setAdjacent(int vertax, int adjacent) {
 		graph[vertax - 1].add(adjacent);
+		graph[adjacent - 1].add(vertax);
+
+		graph[vertax - 1].sort(null);
+		graph[adjacent - 1].sort(null);
 	}
 
-	@Override
-	public String toString() {
-		return "Graph [graph=" + Arrays.toString(graph) + "]";
-	}
 	public ArrayList<Integer> dfs(int index) {
 		result.add(index);
 		executeDfs(index);
 		return result;
 	}
-	public void executeDfs(int index) {
-		if (!graph[index-1].isEmpty()) {
-			pushAdjacent(stack, graph[index-1]);
+
+	public ArrayList<Integer> getResult() {
+		return result;
+	}
+
+	private void executeDfs(int index) {
+		System.out.println("current" + index);
+		
+		if (!graph[index - 1].isEmpty()) {
+			pushAdjacent(stack, graph[index - 1]);
+			System.out.println("asdf");
 		}
 		System.out.println(stack);
-		
+
 		if (!stack.isEmpty()) {
 			int vertax = stack.pop();
-			if (!walked[vertax-1]) {
-				walked[vertax-1]=true;
+			if (!walked[vertax - 1]) {
+				walked[vertax - 1] = true;
 				result.add(vertax);
 				executeDfs(vertax);
 			}
@@ -84,13 +92,15 @@ class Graph {
 
 	private void pushAdjacent(LinkedList<Integer> stack, LinkedList<Integer> adjacent) {
 		adjacent.sort(null);
-		for (int i = adjacent.size()-1; i >= 0; i--) {
+		for (int i = adjacent.size() - 1; i >= 0; i--) {
 			stack.push(adjacent.get(i));
+			System.out.println(adjacent.get(i));
 		}
 	}
-	
-	public ArrayList<Integer> getResult(){
-		return result;
-	}
-}
 
+	@Override
+	public String toString() {
+		return "Graph [graph=" + Arrays.toString(graph) + "]";
+	}
+
+}
