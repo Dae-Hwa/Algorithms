@@ -8,29 +8,35 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+//4번에서 3번 넘어가는지 확인하기
+
 public class Main {
 
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
+
 		int[] condition = Arrays.stream(br.readLine().split(" ")).mapToInt(x -> Integer.parseInt(x)).toArray();
 		int n = condition[0];
+		int m = condition[1];
 		int index = condition[2];
 		int[] vertaxes;
 		Graph graph = new Graph(n);
-		
-		for (int i = 0; i < n; i++) {
+
+		for (int i = 0; i < m; i++) {
 			vertaxes = Arrays.stream(br.readLine().split(" ")).mapToInt(x -> Integer.parseInt(x)).toArray();
 			graph.setAdjacent(vertaxes[0], vertaxes[1]);
-			System.out.println(Arrays.toString(vertaxes));
 		}
 
 		for (int i = 0; i < n; i++) {
 			graph.sortGraph(i);
 		}
-		graph.dfs(index);
+		if (graph.dfs(index).isEmpty()) {
+			graph.result.add(index);
+		}
 		graph.printResult();
-		graph.bfs(index);
+		if (graph.bfs(index).isEmpty()) {
+			graph.result.add(index);
+		}
 		graph.printResult();
 
 	}
@@ -41,7 +47,7 @@ class Graph {
 	private ArrayDeque<Integer> stack;
 	private ArrayDeque<Integer> queue;
 	private boolean[] walked;
-	private ArrayList<Integer> result;
+	public ArrayList<Integer> result;
 
 	@SuppressWarnings("unchecked")
 	public Graph(int n) {
@@ -109,7 +115,12 @@ class Graph {
 	}
 
 	private Integer executeBfs(int index) {
+		if (walked[index - 1]) {
+			return queue.poll();
+		}
+
 		if (!walked[index - 1] && !graph[index - 1].isEmpty()) {
+
 			enqueueAdjacent(queue, graph[index - 1]);
 			walked[index - 1] = true;
 			result.add(index);
@@ -120,13 +131,17 @@ class Graph {
 
 	private void pushAdjacent(ArrayDeque<Integer> stack, ArrayList<Integer> adjacent) {
 		for (int i = adjacent.size() - 1; i >= 0; i--) {
-			stack.push(adjacent.get(i));
+			if (!walked[adjacent.get(i) - 1]) {
+				stack.push(adjacent.get(i));
+			}
 		}
 	}
 
 	private void enqueueAdjacent(ArrayDeque<Integer> queue, ArrayList<Integer> adjacent) {
 		for (int i = 0; i < adjacent.size(); i++) {
-			queue.offer(adjacent.get(i));
+			if (!walked[adjacent.get(i) - 1]) {
+				queue.offer(adjacent.get(i));
+			}
 		}
 	}
 }
