@@ -68,12 +68,14 @@ class Graph {
 		graph[i].sort(null);
 	}
 
-	public ArrayList<Integer> dfs(int index) {
+	public ArrayList<Integer> dfs(Integer index) {
 		stack = new ArrayDeque<Integer>();
 		result = new ArrayList<Integer>();
 		walked = new boolean[graph.length];
 
-		executeDfs(index);
+		while (index != null) {
+			index = executeDfs(index);
+		}
 
 		return result;
 	}
@@ -98,20 +100,17 @@ class Graph {
 		System.out.println((sb.toString()).trim());
 	}
 
-	private void executeDfs(int index) {
-		if (!walked[index - 1]) {
-			if (graph[index - 1].isEmpty()) {
-				return;
-			}
+	private Integer executeDfs(int index) {
+		if(walked[index-1]) {
+			return stack.poll();
+		}
+		if (!walked[index - 1] && !graph[index - 1].isEmpty()) {
 
 			pushAdjacent(stack, graph[index - 1]);
 			walked[index - 1] = true;
 			result.add(index);
 		}
-
-		if (!stack.isEmpty()) {
-			executeDfs(stack.pop());
-		}
+		return stack.poll();
 	}
 
 	private Integer executeBfs(int index) {
