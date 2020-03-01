@@ -7,28 +7,33 @@ class Main {
   public static void main(String[] args) throws IOException {
 
     int num = Integer.parseInt(br.readLine());
-    StringTokenizer input = new StringTokenizer(br.readLine());
+    String[] input = br.readLine().split(" ");
     int[] result = new int[num];
-    ArrayDeque<Tower> stack = new ArrayDeque<>();
+    int[] stack = new int[num];
+    int[] index = new int[num];
 
-    setResult(input, stack, result);
+    setResult(input, index, stack, result);
     printResult(result);
 
   }
 
-  private static void setResult(StringTokenizer input, ArrayDeque<Tower> stack, int[] result) {
+  private static void setResult(String[] input, int[] stack, int[] index, int[] result) {
     int cur = 0;
+    int pointer = 0;
 
-    for (int i = 0; input.hasMoreTokens(); i++) {
-      cur = Integer.parseInt(input.nextToken());
-      if (!stack.isEmpty() && stack.peek().height < cur) {
-        stack.pop();
+    for (int i = 0; i < input.length; i++) {
+      cur = Integer.parseInt(input[i]);
+      if (stack[pointer] < cur) {
+        pointer--;
       }
-      stack.push(new Tower(cur, i + 1));
+      pointer++;
 
-      for (Tower tower : stack) {
-        if (cur < tower.height) {
-          result[i] = tower.index;
+      stack[pointer] = cur;
+      index[pointer] = i;
+
+      for (int j = pointer; 0 <= j; j--) {
+        if (cur < stack[j]) {
+          result[i] = index[j] + 1;
           break;
         }
       }
@@ -47,15 +52,5 @@ class Main {
     }
 
     System.out.println(sb.toString());
-  }
-}
-
-class Tower {
-  int height;
-  int index;
-
-  public Tower(int height, int index) {
-    this.height = height;
-    this.index = index;
   }
 }
