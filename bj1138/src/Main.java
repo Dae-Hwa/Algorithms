@@ -24,7 +24,7 @@ class Main{
                     result[j]=height;
                     break;
                 }
-                if(result[j]>height || result[j] == 0){
+                if(result[j] == 0){
                     cnt++;
                 }
             }
