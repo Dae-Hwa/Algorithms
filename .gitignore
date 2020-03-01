@@ -26,5 +26,6 @@ hs_err_pid*
 .classpath
 .project
 .settings
-.project
 */.gitignore
+
+launch.json
