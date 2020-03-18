@@ -1,11 +1,20 @@
 package bj2751;
 
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
 
 class Main {
-  public static void main(String[] args) {
-    int endPoint = 5 - 1;
-    int[] input = { 4, 5, 3, 2, 1 };// { 5, 4, 3, 2, 1 };
+  static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+  public static void main(String[] args) throws IOException {
+    StringBuffer sb = new StringBuffer();
+    int endPoint = Integer.parseInt(br.readLine()) - 1;
+    int[] input = new int[endPoint + 1];
+
+    for (int i = 0; i <= endPoint; i++) {
+      input[i] = Integer.parseInt(br.readLine());
+    }
+
     int[] result = null;
     int left = 0;
     int leftEnd = 0;
@@ -69,6 +78,13 @@ class Main {
         input = result;
       }
     }
-    System.out.println(Arrays.toString(result));
+    // System.out.println(Arrays.toString(result));
+
+    for (int i = 0; i < result.length - 1; i++) {
+      sb.append(result[i] + "\r\n");
+    }
+    sb.append(result[result.length - 1]);
+
+    System.out.print(sb.toString());
   }
 }
