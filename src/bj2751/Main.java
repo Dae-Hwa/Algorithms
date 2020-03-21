@@ -1,7 +1,6 @@
-package bj2751;
 
 import java.io.*;
-import java.util.*;
+// import java.util.*;
 
 class Main {
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,13 +14,25 @@ class Main {
       input[i] = Integer.parseInt(br.readLine());
     }
 
-    int[] result = null;
+    mergeSort(input, endPoint);
+
+    for (int i = 0; i < input.length - 1; i++) {
+      sb.append(input[i] + "\r\n");
+    }
+    sb.append(input[input.length - 1]);
+
+    System.out.print(sb.toString());
+  }
+
+  public static void mergeSort(int[] input, int endPoint) {
+    int[] result = new int[input.length];
     int left = 0;
     int leftEnd = 0;
     int right = 0;
     int rightEnd = 0;
     int mergeSize = 0;
     int pointer = 0;
+    int startPoint = 0;
 
     for (mergeSize = 1; mergeSize <= endPoint; mergeSize <<= 1) {
       // 병합 크기가 변할때마다 0에서부터 시작
@@ -37,8 +48,7 @@ class Main {
         right = left + mergeSize;
         leftEnd = right - 1;
         rightEnd = right + mergeSize - 1;
-        // result에 deep copy 후 result에 결과병합(병합을 했을 때, 병합(정렬)되지 않은 부분은 그대로 있어야 함)
-        result = Arrays.copyOf(input, input.length);
+        startPoint = left;
 
         for (pointer = left; pointer <= endPoint; pointer++) {
           if (right <= rightEnd && right <= endPoint && input[right] <= input[left]) {
@@ -75,16 +85,12 @@ class Main {
         }
         left--;
         right--;
-        input = result;
+
+        // 병합결과 반영
+        for (int i = startPoint; i <= rightEnd && i <= endPoint; i++) {
+          input[i] = result[i];
+        }
       }
     }
-    // System.out.println(Arrays.toString(result));
-
-    for (int i = 0; i < result.length - 1; i++) {
-      sb.append(result[i] + "\r\n");
-    }
-    sb.append(result[result.length - 1]);
-
-    System.out.print(sb.toString());
   }
 }
