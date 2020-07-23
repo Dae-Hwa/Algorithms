@@ -29,3 +29,10 @@ hs_err_pid*
 */.gitignore
 
 launch.json
+.vscode/settings.json
+.idea/modules.xml
+.idea/misc.xml
+.idea/encodings.xml
+.idea/Algorithms.iml
+.idea/$CACHE_FILE$
+.idea/vcs.xml
