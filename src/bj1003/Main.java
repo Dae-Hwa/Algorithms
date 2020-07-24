@@ -3,29 +3,31 @@ package bj1003;
 import java.io.*;
 
 public class Main {
-
-  private static int[][] results = new int[41][3];
+  private static int[][] results = new int[41][2];
 
   public static void main(String[] args) throws IOException {
     int[] input = getInput();
-    results[0][0] = 1;
-    results[0][2] = 1;
 
     for (int i = 0; i < input.length; i++) {
       int cur = input[i];
-      setResult(cur);
+      setResultBy(cur);
       System.out.println(results[cur][0] + " " + results[cur][1]);
     }
   }
 
-  private static void setResult(int n) {
+  private static void setResultBy(int n) {
     if (n == 0) {
+      results[0][0] = 1;
+
       return;
     }
 
-    if (results[n][2] != 1) {
-      setResult(n - 1);
-      results[n] = new int[] {results[n - 1][1], results[n - 1][0] + results[n - 1][1], 1};
+    if (results[n][0] == 0 && results[n][1] == 0) {
+      setResultBy(n - 1);
+
+      int zeroCnt = results[n - 1][1];
+      int oneCnt = results[n - 1][0] + results[n - 1][1];
+      results[n] = new int[] {zeroCnt, oneCnt};
     }
   }
 
