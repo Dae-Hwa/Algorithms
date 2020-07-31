@@ -11,7 +11,7 @@ public class Main {
 
     Question firstQuestion = questions.poll();
 
-    for (int i = 123; i < 987; i++) {
+    for (int i = 123; i <= 987; i++) {
       addAnswer(firstQuestion, i, answers);
     }
 
