@@ -56,6 +56,7 @@ public class Main {
     if (question.getBall() == ballCnt && question.getStrike() == strikeCnt) {
       answers.add(targetNumber);
     }
+    // TODO : 초기화 확인
   }
 
   private static int[] getPlaceValuesBy(int number) {
