@@ -5,8 +5,6 @@ import java.util.*;
 
 public class Main {
   public static void main(String[] args) throws IOException {
-    boolean[][][] isNotPossible = new boolean[9][9][9];
-
     Queue<Integer> answers = new ArrayDeque<>();
 
     Queue<Question> questions = getInput();
@@ -14,7 +12,7 @@ public class Main {
     Question firstQuestion = questions.poll();
 
     for (int i = 123; i < 987; i++) {
-      addAnswers(firstQuestion, i, answers);
+      addAnswer(firstQuestion, i, answers);
     }
 
     while (!questions.isEmpty()) {
@@ -22,7 +20,7 @@ public class Main {
       Queue<Integer> results = new ArrayDeque<>();
 
       while (!answers.isEmpty()) {
-        addAnswers(currentQuestion, answers.poll(), results);
+        addAnswer(currentQuestion, answers.poll(), results);
       }
 
       answers = results;
@@ -31,19 +29,23 @@ public class Main {
     System.out.println(answers.size());
   }
 
-  private static void addAnswers(Question question, int targetNumber, Queue<Integer> answers) {
+  private static void addAnswer(Question question, int targetNumber, Queue<Integer> answers) {
     int ballCnt = 0;
     int strikeCnt = 0;
     int[] targetNumbers = getPlaceValuesBy(targetNumber);
     int[] numbers = getPlaceValuesBy(question.getNumber());
 
+    if (targetNumbers.length != 3) {
+      return;
+    }
 
     for (int i = 0; i < targetNumbers.length; i++) {
-      int searchResult = Arrays.binarySearch(targetNumbers, numbers[i]);
-      if (searchResult != -1) {
-        ballCnt++;
+      for (int j = 0; j < targetNumbers.length; j++) {
+        if (targetNumbers[j] == numbers[i]) {
+          ballCnt++;
+        }
       }
-      if (searchResult == i) {
+      if (targetNumbers[i] == numbers[i]) {
         strikeCnt++;
         ballCnt--;
       }
@@ -56,7 +58,6 @@ public class Main {
     if (question.getBall() == ballCnt && question.getStrike() == strikeCnt) {
       answers.add(targetNumber);
     }
-    // TODO : 초기화 확인
   }
 
   private static int[] getPlaceValuesBy(int number) {
@@ -65,6 +66,8 @@ public class Main {
     int u = number % 100 % 10;
 
     if (h == t || h == u || t == u) {
+      return new int[] {};
+    } else if (t == 0 || u == 0) {
       return new int[] {};
     }
 
