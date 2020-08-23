@@ -36,3 +36,5 @@ launch.json
 .idea/Algorithms.iml
 .idea/$CACHE_FILE$
 .idea/vcs.xml
+.idea/
+bin/
