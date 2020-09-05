@@ -6,6 +6,7 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         int[][] map = getInput();
+        int[][] dist = new int[map.length][map.length];
         boolean[][] visited = new boolean[map.length][map.length];
         int[] dx = {0, 0, 1, -1};
         int[] dy = {1, -1, 0, 0};
@@ -41,47 +42,50 @@ public class Main {
             }
         }
 
-        for (int[] m : map) {
-            System.out.println(Arrays.toString(m));
-        }
 
-        int max = Integer.MAX_VALUE;
 
+
+        queue.clear();
 
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (1 < map[i][j]) {
-                    queue.add(new int[]{i, j, 0});
-                    int level;
-                    int curId = map[i][j];
-                    visited = new boolean[map.length][map.length];
+                    queue.add(new int[]{i, j});
+                    dist[i][j] = 0;
+                }
+            }
+        }
 
-                    while (!queue.isEmpty()) {
-                        int[] current = queue.poll();
-                        visited[current[0]][current[1]] = true;
-                        level = current[2];
+        int max = Integer.MAX_VALUE;
 
-                        for (int k = 0; k < 4; k++) {
-                            int x = current[0] + dx[k];
-                            int y = current[1] + dy[k];
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+//            System.out.println("===");
+//            for (int[] m : map) {
+//                System.out.println(Arrays.toString(m));
+//            }
+//            System.out.println("===");
 
-                            if (0 <= x && 0 <= y && x < map.length && y < map[i].length) {
-                                if (1 < map[x][y] && map[x][y] != curId) {
-                                    if (level < max) {
-                                        max = level;
-                                    }
+            if(max < dist[current[0]][current[1]] * 2) {
+                continue;
+            }
 
-                                    queue.clear();
+            for (int k = 0; k < 4; k++) {
+                int x = current[0] + dx[k];
+                int y = current[1] + dy[k];
 
-                                    break;
-                                }
-
-                                if (map[x][y] == 0 && !visited[x][y]) {
-                                    visited[x][y] = true;
-                                    queue.add(new int[]{x, y, level + 1});
-                                }
-                            }
+                if (0 <= x && 0 <= y && x < map.length && y < map[0].length) {
+                    if (1 < map[x][y] && map[x][y] != map[current[0]][current[1]]) {
+                        if (dist[x][y] < max) {
+                            max = dist[current[0]][current[1]] + dist[x][y];
                         }
+                        continue;
+                    }
+                    if (map[x][y] == 0 && !visited[x][y] && map[x][y] != map[current[0]][current[1]]) {
+                        queue.add(new int[]{x, y});
+                        map[x][y] = map[current[0]][current[1]];
+                        dist[x][y] = dist[current[0]][current[1]] + 1;
+                        visited[x][y] = true;
                     }
                 }
             }
