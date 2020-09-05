@@ -6,22 +6,22 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         int[][] map = getInput();
-        int[][] dist = new int[map.length][map.length];
         boolean[][] visited = new boolean[map.length][map.length];
         int[] dx = {0, 0, 1, -1};
         int[] dy = {1, -1, 0, 0};
 
         Queue<int[]> queue = new ArrayDeque<>();
+        Stack<int[]> stack = new Stack<>();
 
         int id = 0;
 
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (1 <= map[i][j] && !visited[i][j]) {
-                    queue.add(new int[]{i, j});
+                    stack.push(new int[]{i, j});
                     id++;
-                    while (!queue.isEmpty()) {
-                        int[] current = queue.poll();
+                    while (!stack.isEmpty()) {
+                        int[] current = stack.pop();
                         visited[current[0]][current[1]] = true;
 
                         for (int k = 0; k < 4; k++) {
@@ -30,7 +30,7 @@ public class Main {
 
                             if (0 <= x && 0 <= y && x < map.length && y < map[i].length) {
                                 if (1 == map[x][y] && !visited[x][y]) {
-                                    queue.add(new int[]{x, y});
+                                    stack.push(new int[]{x, y});
                                 }
                                 if (map[x][y] == 0) {
                                     map[current[0]][current[1]] = id + 1;
@@ -43,53 +43,50 @@ public class Main {
         }
 
 
-
-
         queue.clear();
+        int max = Integer.MAX_VALUE;
+        stack.clear();
 
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (1 < map[i][j]) {
-                    queue.add(new int[]{i, j});
-                    dist[i][j] = 0;
-                }
-            }
-        }
+                    stack.push(new int[]{i, j, 0});
+                    visited = new boolean[map.length][map.length];
+                    int currentId = map[i][j];
+                    while (!stack.isEmpty()) {
+                        int[] current = stack.pop();
 
-        int max = Integer.MAX_VALUE;
-
-        while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-//            System.out.println("===");
-//            for (int[] m : map) {
-//                System.out.println(Arrays.toString(m));
-//            }
-//            System.out.println("===");
-
-            if(max < dist[current[0]][current[1]] * 2) {
-                continue;
-            }
-
-            for (int k = 0; k < 4; k++) {
-                int x = current[0] + dx[k];
-                int y = current[1] + dy[k];
-
-                if (0 <= x && 0 <= y && x < map.length && y < map[0].length) {
-                    if (1 < map[x][y] && map[x][y] != map[current[0]][current[1]]) {
-                        if (dist[x][y] < max) {
-                            max = dist[current[0]][current[1]] + dist[x][y];
+                        if(max <= current[2]) {
+                            continue;
                         }
-                        continue;
-                    }
-                    if (map[x][y] == 0 && !visited[x][y] && map[x][y] != map[current[0]][current[1]]) {
-                        queue.add(new int[]{x, y});
-                        map[x][y] = map[current[0]][current[1]];
-                        dist[x][y] = dist[current[0]][current[1]] + 1;
-                        visited[x][y] = true;
+
+//                        System.out.println("==");
+//                        for(boolean[] m : visited) {
+//                            System.out.println(Arrays.toString(m));
+//                        }
+//                        System.out.println("==");
+
+                        for (int k = 0; k < 4; k++) {
+                            int x = current[0] + dx[k];
+                            int y = current[1] + dy[k];
+
+                            if (0 <= x && 0 <= y && x < map.length && y < map[i].length) {
+                                if (map[x][y] != currentId && 1 < map[x][y]) {
+                                    if (current[2] < max) {
+                                        max = current[2];
+                                    }
+//                                } else if (map[x][y] == 0 && !visited[x][y]) {
+                                } else if (map[x][y] == 0 && !visited[x][y]) {
+                                    stack.push(new int[]{x, y, current[2] + 1});
+                                    visited[x][y] = true;
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+
 
         System.out.println(max);
     }
@@ -99,10 +96,17 @@ public class Main {
 
         int sizeOfMap = Integer.parseInt(br.readLine());
 
-        int[][] map = new int[sizeOfMap][];
+        int[][] map = new int[sizeOfMap][sizeOfMap];
 
         for (int i = 0; i < sizeOfMap; i++) {
-            map[i] = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+            String[] input = br.readLine().split(" ");
+            for (int j = 0; j < sizeOfMap; j++) {
+                try {
+                    map[i][j] = Integer.parseInt(input[j]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return map;
