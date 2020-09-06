@@ -12,16 +12,16 @@ public class Main {
 
 class Solution {
     public int solution(int[] nums) {
-        Combination<Integer> combinationObj = Combination.createBy(Arrays.stream(nums).boxed().collect(Collectors.toList()), 3);
+        Combinations combinationsObj = Combinations.createBy(nums.length, 3);
 
-        List<List<Integer>> combinations = combinationObj.getCombinationsOf();
+        List<Combination<Integer>> combinations = combinationsObj.getCombinationsOf(Arrays.stream(nums).boxed().collect(Collectors.toList()));
 
         int primeNumberCount = 0;
 
-        for (List<Integer> combination : combinations) {
+        for (Combination<Integer> combination : combinations) {
             boolean isPrimeNumber = true;
 
-            int sumOfCombination = combination.stream().mapToInt(i -> i).sum();
+            int sumOfCombination = combination.getCombination().stream().mapToInt(i -> i).sum();
 
             for (int j = 2; j <= Math.sqrt(sumOfCombination); j++) {
                 if (sumOfCombination % j == 0) {
@@ -40,25 +40,43 @@ class Solution {
 }
 
 class Combination<T> {
-    private final List<List<T>> combinationsOf = new ArrayList<>();
+    private List<T> combination;
 
-
-    public static <T> Combination<T> createBy(List<T> og, int r) {
-        Combination<T> combination = new Combination();
-
-        combination.init(og, og.size(), r);
-
-        return combination;
+    public Combination(List<T> combination) {
+        this.combination = combination;
     }
 
-    private void init(List<T> nums, int n, int r) {
+    public List<T> getCombination() {
+        return Collections.unmodifiableList(combination);
+    }
+}
+
+class Combinations {
+    private final List<Combination<Integer>> combinations = new ArrayList<>();
+
+    private final int n;
+    private final int r;
+
+    public Combinations(int n, int r) {
+        this.n = n;
+        this.r = r;
+    }
+
+    public static Combinations createBy(int n, int r) {
+        Combinations combinations = new Combinations(n, r);
+        combinations.init();
+
+        return combinations;
+    }
+
+    private void init() {
         Stack<Integer> combinationElements = new Stack<>();
-        pick(nums, combinationElements, n, r);
+        pick(combinationElements, r);
     }
 
-    private void pick(List<T> nums, Stack<Integer> combinationElements, int n, int r) {
+    private void pick(Stack<Integer> combinationElements, int r) {
         if (r == 0) {
-            addCombination(nums, combinationElements);
+            addCombination(combinationElements);
             return;
         }
 
@@ -66,22 +84,60 @@ class Combination<T> {
 
         for (int i = current; i < n; i++) {
             combinationElements.push(i);
-            pick(nums, combinationElements, n, r - 1);
+            pick(combinationElements, r - 1);
             combinationElements.pop();
         }
     }
 
-    private void addCombination(List<T> nums, Stack<Integer> combinationElements) {
-        List<T> combination = new ArrayList<>();
+    private void addCombination(Stack<Integer> combinationElements) {
+        List<Integer> combination = new ArrayList<>();
 
         for (int i : combinationElements) {
-            combination.add(nums.get(i));
+            combination.add(i);
         }
 
-        combinationsOf.add(combination);
+        combinations.add(new Combination(combination));
     }
 
-    public List<List<T>> getCombinationsOf() {
-        return Collections.unmodifiableList(combinationsOf);
+    public List<Combination<Integer>> getCombinations() {
+        return Collections.unmodifiableList(combinations);
+    }
+
+    public <T> List<Combination<T>> getCombinationsOf(List<T> target) {
+        compareCombinationSizeWithTarget(target.size());
+
+        List<Combination<T>> mappedCombinations = new ArrayList<>();
+
+        for (Combination<Integer> combination : this.combinations) {
+            List<T> result = new ArrayList<>();
+
+            for (int i : combination.getCombination()) {
+                result.add(target.get(i));
+            }
+
+            mappedCombinations.add(new Combination<>(result));
+        }
+
+
+        return mappedCombinations;
+    }
+
+    /**
+     * 생성된 조합 nCr 의 n과 매개변수 sizeOfTarget 비교
+     * @param sizeOfTarget 조합 변환 대상의 길이
+     */
+    private void compareCombinationSizeWithTarget(int sizeOfTarget) {
+        if (sizeOfTarget != n) {
+            StringBuilder sb = new StringBuilder()
+                    .append("조합 변환 대상의 길이가 생성된 조합의 길이와 일치하지 않습니다.")
+                    .append("[조합의 길이 : ")
+                    .append(n)
+                    .append("], ")
+                    .append("[원본 배열의 길이 : ")
+                    .append(sizeOfTarget)
+                    .append("]");
+
+            throw new IllegalArgumentException(sb.toString());
+        }
     }
 }
