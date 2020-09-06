@@ -12,13 +12,15 @@ public class Main {
 
 class Solution {
     public int solution(int[] nums) {
-        Combinations combinationsObj = Combinations.createBy(nums.length, 3);
+        int r = 3;
 
-        List<Combination<Integer>> combinations = combinationsObj.getCombinationsOf(Arrays.stream(nums).boxed().collect(Collectors.toList()));
+        Combinations combinations = Combinations.createBy(nums.length, r);
+
+        List<Integer> targetOfCombination = Arrays.stream(nums).boxed().collect(Collectors.toList());
 
         int primeNumberCount = 0;
 
-        for (Combination<Integer> combination : combinations) {
+        for (Combination<Integer> combination : combinations.getCombinationsOf(targetOfCombination)) {
             boolean isPrimeNumber = true;
 
             int sumOfCombination = combination.getCombination().stream().mapToInt(i -> i).sum();
@@ -35,6 +37,8 @@ class Solution {
             }
         }
 
+        System.out.println(combinations.getCombinations().toString());
+
         return primeNumberCount;
     }
 }
@@ -48,6 +52,13 @@ class Combination<T> {
 
     public List<T> getCombination() {
         return Collections.unmodifiableList(combination);
+    }
+
+    @Override
+    public String toString() {
+        return "Combination{" +
+                "combination=" + combination +
+                '}';
     }
 }
 
@@ -124,6 +135,7 @@ class Combinations {
 
     /**
      * 생성된 조합 nCr 의 n과 매개변수 sizeOfTarget 비교
+     *
      * @param sizeOfTarget 조합 변환 대상의 길이
      */
     private void compareCombinationSizeWithTarget(int sizeOfTarget) {
@@ -139,5 +151,14 @@ class Combinations {
 
             throw new IllegalArgumentException(sb.toString());
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Combinations{" +
+                "combinations=" + combinations +
+                ", n=" + n +
+                ", r=" + r +
+                '}';
     }
 }
