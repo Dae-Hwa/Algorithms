@@ -13,38 +13,58 @@ public class Main {
     }
 
     public static void solution(String input) {
-
-        Stack<Integer> stack = new Stack<>();
-
-        stack.push(0);
+        Decompressor decompressor = new Decompressor();
 
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
 
-            if (c == ')') {
-
-                int target = Integer.parseInt(stack.pop().toString());
-
-                int multiplyNumber = Integer.parseInt(stack.pop().toString());
-
-                int cur = target * multiplyNumber + Integer.parseInt(stack.pop().toString());
-
-                stack.push(cur);
-
-                continue;
-            }
-
-            if (i + 1 < input.length() && input.charAt(i + 1) == '(') {
-                stack.push(Integer.parseInt(String.valueOf(c)));
-                stack.push(0);
-                continue;
-            }
-
             if (c != '(') {
-                stack.push(stack.pop() + 1);
+                decompressor.add(c, i + 1 < input.length() && input.charAt(i + 1) == '(');
             }
+
         }
 
-        System.out.println(stack.pop());
+        decompressor.printTop();
+    }
+}
+
+class Decompressor {
+    private Stack<Integer> stack = new Stack<>();
+
+    public Decompressor() {
+        stack.push(0);
+    }
+
+    public void add(char c, boolean needNext) {
+        if (needNext) {
+            addNext(c);
+
+            return;
+        }
+
+        if (c == ')') {
+            decompress();
+
+            return;
+        }
+
+        stack.push(stack.pop() + 1);
+    }
+
+    private void decompress() {
+        int target = stack.pop();
+        int multiplyNumber = stack.pop();
+        int cur = target * multiplyNumber + stack.pop();
+
+        stack.push(cur);
+    }
+
+    private void addNext(char c) {
+        stack.push(Integer.parseInt(String.valueOf(c)));
+        stack.push(0);
+    }
+
+    public void printTop() {
+        System.out.println(stack.peek());
     }
 }
