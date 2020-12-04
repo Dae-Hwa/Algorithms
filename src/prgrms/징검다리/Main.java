@@ -2,27 +2,6 @@ package prgrms.징검다리;
 
 import java.util.*;
 
-public class Main {
-    public static void main(String[] args) {
-        List<List<Object>> inputs = new ArrayList<>(Arrays.asList(
-                Arrays.asList(
-                        25,
-                        new int[]{2, 14, 11, 21, 17},
-                        2
-                ),
-                Arrays.asList(
-                        7,
-                        new int[]{2, 4, 6},
-                        1
-                )
-        ));
-
-        for (List<Object> input : inputs) {
-            System.out.println(new Solution().solution((int) input.get(0), (int[]) input.get(1), (int) input.get(2)));
-        }
-    }
-}
-
 class Solution {
     public int solution(int distance, int[] rocks, int n) {
         int[] distances = new int[rocks.length + 1];
@@ -48,9 +27,7 @@ class Solution {
 
             for (int i = 0; i < distancesCopy.length - 1; i++) {
                 if (distancesCopy[i] < curDistance) {
-//                    if(i < distancesCopy.length - 1) {
-                        distancesCopy[i + 1] += distancesCopy[i];
-//                    }
+                    distancesCopy[i + 1] += distancesCopy[i];
 
                     if(n < ++removeCount) {
                         break;
@@ -70,5 +47,26 @@ class Solution {
         }
 
         return result;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<List<Object>> inputs = new ArrayList<>(Arrays.asList(
+                Arrays.asList(
+                        25,
+                        new int[]{2, 14, 11, 21, 17},
+                        2
+                ),
+                Arrays.asList(
+                        7,
+                        new int[]{2, 4, 6},
+                        1
+                )
+        ));
+
+        for (List<Object> input : inputs) {
+            System.out.println(new Solution().solution((int) input.get(0), (int[]) input.get(1), (int) input.get(2)));
+        }
     }
 }
