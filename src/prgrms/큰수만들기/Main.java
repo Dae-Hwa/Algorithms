@@ -4,34 +4,23 @@ import java.util.*;
 
 class Solution {
     public String solution(String number, int k) {
-        int currentLength = number.length() - k;
-        int resultLength = currentLength;
-
         StringBuilder result = new StringBuilder();
 
-        for (int i = 0; i < resultLength; i++) {
-            int max = 0;
-            int maxIndex = 0;
-
-            for (int j = 0; j < number.length() - currentLength + 1; j++) {
-                int cur = Character.digit(number.charAt(j), 10);
-
-                if (max < cur) {
-                    max = cur;
-                    maxIndex = j;
-                }
-
-                if (cur == 9) {
-                    break;
-                }
+        for (int i = 0; i < number.length(); i++) {
+            int cur = charToInt(number.charAt(i));
+            for (; 0 < result.length() && charToInt(result.charAt(result.length() - 1)) < cur && 0 < k; k--) {
+                result.deleteCharAt(result.length() - 1);
             }
-
-            result.append(max);
-            currentLength--;
-            number = number.substring(maxIndex + 1);
+            if (result.length() < number.length() - k) {
+                result.append(cur);
+            }
         }
 
         return result.toString();
+    }
+
+    public static int charToInt(char c) {
+        return Character.digit(c, 10);
     }
 }
 
@@ -40,8 +29,8 @@ public class Main {
         List<Object> inputs;
         inputs = new ArrayList<>(Arrays.asList(
                 new ArrayList(Arrays.asList(
-                        "4177252841",
-                        4
+                        "7777777",
+                        2
                 ))
         ));
 
