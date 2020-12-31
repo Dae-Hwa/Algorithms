@@ -1,4 +1,4 @@
-package bj2751;
+package boj.boj2751;
 
 import java.util.Arrays;
 

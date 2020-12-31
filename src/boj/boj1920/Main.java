@@ -1,3 +1,5 @@
+package boj.boj1920;
+
 import java.io.*;
 
 class Main {
