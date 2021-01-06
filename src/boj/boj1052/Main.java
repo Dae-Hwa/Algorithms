@@ -7,31 +7,20 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        long[] input = Arrays.stream(br.readLine().split(" "))
-                .mapToLong(Long::parseLong)
+        int[] input = Arrays.stream(br.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
                 .toArray();
 
-        int height = (int) (Math.log(input[0]) / Math.log(2)) + 2;
+        int N = input[0];
+        int K = input[1];
+        int count = 0;
 
-        long[] count = new long[height];
-        int extra = 0;
-        count[0] = input[0];
-
-        while (true) {
-            for (int i = 0; i < count.length - 1; i++) {
-                if (2 <= count[i]) {
-                    count[i + 1] = count[i] / 2;
-                    count[i] %= 2;
-                }
-            }
-            if (input[1] < Arrays.stream(count).sum()) {
-                count[0] += 1;
-                extra++;
-            } else if (input[1] <= input[0] + extra) {
-                break;
-            }
+        while (K < Long.bitCount(N)) {
+            N++;
+            count++;
         }
 
-        System.out.println(extra);
+        System.out.println(count);
     }
 }
+
