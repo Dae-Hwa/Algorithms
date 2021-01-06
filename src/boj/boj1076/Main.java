@@ -44,15 +44,11 @@ public class Main {
         colors[1] = br.readLine();
         colors[2] = br.readLine();
 
-        StringBuilder sb = new StringBuilder();
-
         long first = Color.getColor(colors[0]).VALUE;
-        long second = Color.getColor(colors[1]).VALUE * Color.getColor(colors[2]).MULTIPLE;
+        long second = Color.getColor(colors[1]).VALUE;
 
-        sb.append(first != 0 ? first : "")
-                .append(second != 0 ? second : "");
+        long result = (first * 10 + second) * Color.getColor(colors[2]).MULTIPLE;
 
-        System.out.println(sb.length() == 0 ? 0 : sb);
-
+        System.out.println(result);
     }
 }
