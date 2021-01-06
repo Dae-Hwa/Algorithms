@@ -11,49 +11,27 @@ public class Main {
                 .mapToLong(Long::parseLong)
                 .toArray();
 
-        Map<Long, Long> map = new HashMap<>();
+        int height = (int) (Math.log(input[0]) / Math.log(2)) + 2;
 
-        map.put(1L, input[0]);
-
-        long cur = input[0];
-        long target = input[1];
-        long extra = 0;
+        long[] count = new long[height];
+        int extra = 0;
+        count[0] = input[0];
 
         while (true) {
-            Set<Long> keySet = map.keySet();
-
-            for (long key : keySet) {
-                if (target == cur) {
-                    System.out.println(extra);
-                    return;
-                }
-
-                if (2 <= map.get(key)) {
-                    cur--;
-                    map.put(key, map.get(key) - 2);
-                    map.put(key * 2, map.getOrDefault(key * 2, 0l) + 1);
+            for (int i = 0; i < count.length - 1; i++) {
+                if (2 <= count[i]) {
+                    count[i + 1] = count[i] / 2;
+                    count[i] %= 2;
                 }
             }
-
-            if (target == cur) {
-                System.out.println(extra);
-                return;
-            }
-
-            boolean cannotAdd = true;
-
-            for (Long key : keySet) {
-                if (2 <= map.get(key)) {
-                    cannotAdd = false;
-                    break;
-                }
-            }
-
-            if (cannotAdd) {
-                map.put(1l, map.getOrDefault(1l, 0l) + 1);
-                cur++;
+            if (input[1] < Arrays.stream(count).sum()) {
+                count[0] += 1;
                 extra++;
+            } else if (input[1] <= input[0] + extra) {
+                break;
             }
         }
+
+        System.out.println(extra);
     }
 }
