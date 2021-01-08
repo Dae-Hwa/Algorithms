@@ -5,18 +5,13 @@ import java.util.*;
 class Solution {
 
     public int solution(int n, int[][] costs) {
-        int answer = 0;
-
         List<Edge> edges = new ArrayList<>();
 
         for (int[] cost : costs) {
             edges.add(new Edge(cost[0], cost[1], cost[2]));
         }
 
-        Collections.sort(edges);
-
         UnionFind unionFind = new UnionFind(n);
-
 
         int sum = 0;
 
@@ -27,12 +22,8 @@ class Solution {
             }
         }
 
-        System.out.println(sum);
-
-        return answer;
+        return sum;
     }
-
-
 }
 
 class Edge implements Comparable<Edge> {
@@ -88,18 +79,23 @@ class UnionFind {
         return parent[x];
     }
 
-    public void union(int x, int y) {
+    public boolean union(int x, int y) {
         int rootX = find(x);
         int rootY = find(y);
+
+        if (rootX == rootY) {
+            return false;
+        }
 
         if (parent[rootY] * -1 < parent[rootX] * -1) {
             parent[rootX] += parent[rootY];
             parent[rootY] = rootX;
-            return;
+            return true;
         }
 
         parent[rootY] += parent[rootX];
         parent[rootX] = rootY;
+        return true;
     }
 }
 
@@ -115,7 +111,8 @@ public class Main {
         for (Object obj : inputs) {
             List<Object> input = (List<Object>) obj;
 
-            new Solution().solution((int) input.get(0), (int[][]) input.get(1));
+            int result = new Solution().solution((int) input.get(0), (int[][]) input.get(1));
+            System.out.println(result);
         }
     }
 }
