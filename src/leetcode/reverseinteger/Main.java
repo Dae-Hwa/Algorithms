@@ -28,12 +28,6 @@ class Solution {
             if (result < Integer.MIN_VALUE / 10) {
                 return 0;
             }
-            if (result == Integer.MAX_VALUE / 10 && Integer.MAX_VALUE % 10 < modular) {
-                return 0;
-            }
-            if (result == Integer.MIN_VALUE / 10 && modular < Integer.MIN_VALUE % 10) {
-                return 0;
-            }
 
             if (modular < 0) {
                 modular *= -1;
@@ -58,8 +52,12 @@ public class Main {
                 )),
                 new ArrayList(Arrays.asList(
                         1534236469, 0
+                )),
+                new ArrayList(Arrays.asList(
+//                        Integer.MAX_VALUE, 0
+//                        2147483647
+                        -1563847412, 0
                 ))
-
         ));
 
         for (int i = 0; i < inputs.size(); i++) {
