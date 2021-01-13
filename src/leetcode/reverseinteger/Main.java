@@ -5,15 +5,45 @@ import java.util.*;
 
 class Solution {
     public int reverse(int x) {
-        int rev = 0;
-        while (x != 0) {
-            int pop = x % 10;
-            x /= 10;
-            if (rev > Integer.MAX_VALUE/10 || (rev == Integer.MAX_VALUE / 10 && pop > 7)) return 0;
-            if (rev < Integer.MIN_VALUE/10 || (rev == Integer.MIN_VALUE / 10 && pop < -8)) return 0;
-            rev = rev * 10 + pop;
+
+
+        Deque<String> deque = new ArrayDeque<>(Arrays.asList(String.valueOf(x).split("")));
+
+        StringBuilder sb = new StringBuilder();
+
+        int sign = 1;
+        int result = 0;
+
+        if (x < 0) {
+            sign = -1;
+            deque.pollFirst();
         }
-        return rev;
+
+        while (!deque.isEmpty()) {
+            int modular = Integer.parseInt(deque.pollLast()) % 10;
+
+            if (Integer.MAX_VALUE / 10 < result) {
+                return 0;
+            }
+            if (result < Integer.MIN_VALUE / 10) {
+                return 0;
+            }
+            if (result == Integer.MAX_VALUE / 10 && Integer.MAX_VALUE % 10 < modular) {
+                return 0;
+            }
+            if (result == Integer.MIN_VALUE / 10 && modular < Integer.MIN_VALUE % 10) {
+                return 0;
+            }
+
+            if (modular < 0) {
+                modular *= -1;
+            }
+
+            result *= 10;
+            result += modular;
+        }
+
+        return result * sign;
     }
 }
 
