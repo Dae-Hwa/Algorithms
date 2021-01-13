@@ -5,24 +5,15 @@ import java.util.*;
 
 class Solution {
     public int reverse(int x) {
-        StringBuilder sb = new StringBuilder();
-
-        int sign = 1;
-
-        if (x < 0) {
-            sign = -1;
-        }
-
+        int rev = 0;
         while (x != 0) {
-            int modular = x % 10;
-            sb.append(modular < 0 ? modular * -1 : modular);
+            int pop = x % 10;
             x /= 10;
+            if (rev > Integer.MAX_VALUE/10 || (rev == Integer.MAX_VALUE / 10 && pop > 7)) return 0;
+            if (rev < Integer.MIN_VALUE/10 || (rev == Integer.MIN_VALUE / 10 && pop < -8)) return 0;
+            rev = rev * 10 + pop;
         }
-        try {
-            return Integer.parseInt(sb.toString()) * sign;
-        } catch (NumberFormatException e) {
-            return 0;
-        }
+        return rev;
     }
 }
 
