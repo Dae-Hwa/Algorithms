@@ -4,10 +4,19 @@ import java.util.*;
 
 class Solution {
     public boolean isPalindrome(int x) {
-        Deque<String> deque = new ArrayDeque<>(Arrays.asList(String.valueOf(x).split("")));
+        if (x < 0) {
+            return false;
+        }
+
+        Deque<Integer> deque = new ArrayDeque<>();
+
+        while (x != 0) {
+            deque.offerLast(x % 10);
+            x /= 10;
+        }
 
         while (1 < deque.size()) {
-            if (!deque.pollFirst().equals(deque.pollLast())) {
+            if (deque.pollFirst() != (deque.pollLast())) {
                 return false;
             }
         }
