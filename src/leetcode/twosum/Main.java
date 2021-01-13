@@ -1,51 +1,20 @@
 package leetcode.twosum;
 
-
 import java.util.*;
 
 class Solution {
     public int[] twoSum(int[] nums, int target) {
-        List<Node> nodes = new ArrayList<>();
-
+        Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
-            nodes.add(new Node(nums[i], i));
-        }
-
-        Collections.sort(nodes);
-
-        for (int i = 0; i < nodes.size(); i++) {
-            for (int j = i + 1; j < nodes.size(); j++) {
-                Node a = nodes.get(i);
-                Node b = nodes.get(j);
-
-                if (a.num + b.num == target) {
-                    int[] result = new int[]{a.index, b.index};
-                    Arrays.sort(result);
-                    return result;
-                }
-
-                if (target < a.num + b.num) {
-                    break;
-                }
+            // 보수를 찾는다. 예를 들어, 9에 대한 2의 보수는 7이며, 7의 보수는 2다. 현재 숫자가 2나 7일때 테이블에서 2 혹은 7을 찾아오면 되는 것이다.
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                // 정답이 2와 7이라고 할 때 둘 중 먼저 계산된 것이 아래에서 put 되어있을 것이다. 예를 들어, 7이 먼저 나왔으면 테이블에는 7이 들어있을 것이고 2의 보수를 찾는 과정에서 7을 찾을 수 있다.
+                return new int[]{map.get(complement), i};
             }
+            map.put(nums[i], i);
         }
-
-        return null;
-    }
-
-    class Node implements Comparable<Node> {
-        int num;
-        int index;
-
-        public Node(int num, int index) {
-            this.num = num;
-            this.index = index;
-        }
-
-        @Override
-        public int compareTo(Node o) {
-            return Integer.compare(num, o.num);
-        }
+        throw new IllegalArgumentException("No two sum solution");
     }
 }
 
