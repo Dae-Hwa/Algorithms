@@ -5,21 +5,18 @@ import java.util.*;
 
 class Solution {
     public int reverse(int x) {
-
-
-        Deque<String> deque = new ArrayDeque<>(Arrays.asList(String.valueOf(x).split("")));
-
         StringBuilder sb = new StringBuilder();
 
         int sign = 1;
 
         if (x < 0) {
             sign = -1;
-            deque.pollFirst();
         }
 
-        while (!deque.isEmpty()) {
-            sb.append(deque.pollLast());
+        while (x != 0) {
+            int modular = x % 10;
+            sb.append(modular < 0 ? modular * -1 : modular);
+            x /= 10;
         }
         try {
             return Integer.parseInt(sb.toString()) * sign;
