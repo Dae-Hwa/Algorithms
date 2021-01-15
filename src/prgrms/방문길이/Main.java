@@ -2,160 +2,119 @@ package prgrms.방문길이;
 
 import java.util.*;
 
-public class Main {
-    public static void main(String[] args) {
-        System.out.println(new Solution().solution("LULLLLLLU"));
-    }
-}
-
-
 class Solution {
     public int solution(String dirs) {
-        GameCharacter gameCharacter = new GameCharacter();
+        int answer = 0;
+
+        Point cur = new Point();
+        Point prev = cur.copy();
+
+        Set<Set<Point>> edges = new HashSet<>();
 
         for (String dir : dirs.split("")) {
-            gameCharacter.move(dir);
+            Set<Point> edge = new HashSet<>();
+
+            if (!MoveCommand.valueOf(dir).execute(cur)) {
+                continue;
+            }
+            edge.add(cur.copy());
+            edge.add(prev);
+
+            prev = cur.copy();
+
+            if (!edges.contains(edge)) {
+                answer++;
+            }
+            edges.add(edge);
         }
 
-        return gameCharacter.getDistance();
+
+        return answer;
     }
 }
 
-enum GameOperator {
-    U("U") {
-        public Place move(Place place) {
-            return new Place(place.getX(), place.getY() + 1);
+enum MoveCommand {
+    U {
+        public boolean execute(Point point) {
+            return point.setY(point.y + 1);
         }
-    }, D("D") {
-        public Place move(Place place) {
-            return new Place(place.getX(), place.getY() - 1);
+    },
+    D {
+        public boolean execute(Point point) {
+            return point.setY(point.y - 1);
         }
-    }, R("R") {
-        public Place move(Place place) {
-            return new Place(place.getX() + 1, place.getY());
+    },
+    R {
+        public boolean execute(Point point) {
+            return point.setX(point.x + 1);
         }
-    }, L("L") {
-        public Place move(Place place) {
-            return new Place(place.getX() - 1, place.getY());
+    },
+    L {
+        public boolean execute(Point point) {
+            return point.setX(point.x - 1);
         }
     };
 
-    private final String symbol;
-
-    GameOperator(String symbol) {
-        this.symbol = symbol;
-    }
-
-    public abstract Place move(Place place);
-
-    public static Place moveBy(Place place, String symbol) {
-        for (GameOperator gameOperator : values()) {
-            if (gameOperator.symbol.equals(symbol)) {
-                return gameOperator.move(place);
-            }
-        }
-
-        throw new IllegalArgumentException(symbol + "과 일치하는 명령을 찾지 못했습니다.");
-    }
+    abstract boolean execute(Point point);
 }
 
-class GameCharacter {
-    private final Set<Path> movedPlaces = new HashSet<>();
-    private Place currentPlace = new Place(0, 0);
-    private Place nextPlace = new Place(0, 0);
+class Point {
+    int x = 0;
+    int y = 0;
 
-    public void move(String symbol) {
-        nextPlace = currentPlace.copy();
-
-        Place movedPlace = GameOperator.moveBy(nextPlace, symbol);
-
-        if (!currentPlace.equals(movedPlace)) {
-            movedPlaces.add(new Path(currentPlace, movedPlace));
-            currentPlace = movedPlace;
-        }
+    public Point() {
     }
 
-    public int getDistance() {
-        return movedPlaces.size();
-    }
-}
-
-class Path {
-    private final Place startPlace;
-    private final Place endPlace;
-
-    public Path(Place startPlace, Place endPlace) {
-        this.startPlace = startPlace;
-        this.endPlace = endPlace;
+    public Point(Point point) {
+        this.x = point.x;
+        this.y = point.y;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        Path target = (Path) o;
-
-        if (this.startPlace.equals(target.startPlace) && this.endPlace.equals(target.endPlace)) {
-            return true;
-        }
-        return this.endPlace.equals(target.startPlace) && this.startPlace.equals(target.endPlace);
-
+    public Point copy() {
+        return new Point(this);
     }
 
-    @Override
-    public int hashCode() {
-        if (startPlace.hashCode() <= endPlace.hashCode()) {
-            return Objects.hash(endPlace, startPlace);
-        }
-
-        return Objects.hash(startPlace, endPlace);
-    }
-}
-
-class Place {
-    private final static int MIN_VALUE_OF_Y = -5;
-    private final static int MAX_VALUE_OF_Y = 5;
-    private final static int MIN_VALUE_OF_X = -5;
-    private final static int MAX_VALUE_OF_X = 5;
-
-    private final int x;
-    private final int y;
-
-    public Place(int x, int y) {
-        if (MAX_VALUE_OF_X < x) {
-            x = MAX_VALUE_OF_X;
-        }
-        if (x < MIN_VALUE_OF_X) {
-            x = MIN_VALUE_OF_X;
-        }
-        if (MAX_VALUE_OF_Y < y) {
-            y = MAX_VALUE_OF_Y;
-        }
-        if (y < MIN_VALUE_OF_Y) {
-            y = MIN_VALUE_OF_Y;
-        }
-
+    public boolean setX(int x) {
         this.x = x;
+
+        if (5 < this.x) {
+            this.x = 5;
+            return false;
+        }
+        if (x < -5) {
+            this.x = -5;
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean setY(int y) {
         this.y = y;
+
+        if (5 < this.y) {
+            this.y = 5;
+            return false;
+        }
+        if (this.y < -5) {
+            this.y = -5;
+            return false;
+        }
+
+        return true;
     }
 
-    public Place copy() {
-        return new Place(x, y);
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    @Override
     public boolean equals(Object o) {
-        return this.x == ((Place) o).x && this.y == ((Place) o).y;
+        Point target = (Point) o;
+
+        return this.x == target.x && this.y == target.y;
     }
 
-    @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+
+    public String toString() {
+        return "(" + x + "," + y + ")";
     }
 }
