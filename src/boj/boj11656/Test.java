@@ -6,16 +6,14 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args) {
-        System.out.println(1<<1);
-
         List<Object> inputs = new ArrayList<>(Arrays.asList(
-//                "baekjoon"
+                "baekjoon"
+                ,
+                "banana"
+                ,
+//                "aaa"
 //                ,
-//                "banana"
-//                ,
-                "aaa"
-//                ,
-//                "abcabcabcabac"
+                "abcabcabcabac"
         ));
 
         for (int i = 0; i < inputs.size(); i++) {
