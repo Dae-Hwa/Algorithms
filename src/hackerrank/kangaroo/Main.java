@@ -2,21 +2,7 @@ package hackerrank.kangaroo;
 
 public class Main {
     static String kangaroo(int x1, int v1, int x2, int v2) {
-        if (v1 - v2 < 1) {
-            return "NO";
-        }
-
-        double result = ((double) (x1 - x2)) / ((double) (v2 - v1));
-
-        if (result < 1) {
-            return "NO";
-        }
-
-        if (0 < result % 1) {
-            return "NO";
-        }
-
-        return "YES";
+        return v2 < v1 && (x1 - x2) % (v2 - v1) == 0 ? "YES" : "NO";
     }
 
     public static void main(String[] args) {
