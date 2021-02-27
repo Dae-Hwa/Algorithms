@@ -10,7 +10,7 @@ public class Main {
 
         int N = Integer.parseInt(br.readLine());
 
-        List<Integer> numbers = new ArrayList<>();
+        Queue<Integer> numbers = new PriorityQueue<>(Comparator.reverseOrder());
 
         for (int i = 0; i < N; i++) {
             numbers.addAll(
@@ -22,8 +22,10 @@ public class Main {
             );
         }
 
-        numbers.sort(Comparator.reverseOrder());
+        for (int i = 0; i < N-1; i++) {
+            numbers.poll();
+        }
 
-        System.out.println(numbers.get(N - 1));
+        System.out.println(numbers.peek());
     }
 }
