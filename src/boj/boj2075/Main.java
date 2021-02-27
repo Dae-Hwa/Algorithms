@@ -10,24 +10,22 @@ public class Main {
 
         int N = Integer.parseInt(br.readLine());
 
-
-        int[][] numbers = new int[N][N];
+        Queue<Integer> numbers = new PriorityQueue<>(Comparator.reverseOrder());
 
         for (int i = 0; i < N; i++) {
-            numbers[i] = Arrays.stream(br.readLine().split(" "))
-                    .mapToInt(Integer::parseInt)
-                    .toArray();
+            numbers.addAll(
+                    Arrays.stream(br.readLine().split(" "))
+                            .mapToInt(Integer::parseInt)
+                            .boxed()
+                            .collect(Collectors.toList())
+
+            );
         }
 
-        int result = Arrays.stream(numbers)
-                .flatMapToInt(Arrays::stream)
-                .boxed()
-                .sorted(Comparator.reverseOrder())
-                .limit(N)
-                .collect(Collectors.toList())
-                .get(N - 1);
+        for (int i = 0; i < N-1; i++) {
+            numbers.poll();
+        }
 
-
-        System.out.println(result);
+        System.out.println(numbers.peek());
     }
 }
