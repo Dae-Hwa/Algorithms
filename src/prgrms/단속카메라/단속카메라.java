@@ -1,47 +1,38 @@
 package prgrms.단속카메라;
 
 import java.io.PrintStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 class Solution {
     public int solution(int[][] routes) {
         int answer = 0;
 
-        Queue<int[]> cars = Arrays.stream(routes)
-                .sorted(Comparator.comparing(ints -> ints[0]))
-                .collect(Collectors.toCollection(ArrayDeque::new));
+        List<int[]> cars = Arrays.stream(routes)
+                .sorted(Comparator.comparing(ints -> ints[1]))
+                .collect(Collectors.toList());
 
-        int nextExit = Integer.MAX_VALUE;
+        for (int i = 0; i < cars.size(); i++) {
+            answer++;
+            int exit = cars.get(i)[1];
 
-        while (!cars.isEmpty()) {
-            int[] enteredCar = cars.poll();
-
-            if (nextExit < enteredCar[0]) {
-                answer++;
-                nextExit = enteredCar[1];
-            } else if (nextExit == enteredCar[0]) {
-                answer++;
-                nextExit = Integer.MAX_VALUE;
-            } else if (enteredCar[1] <= nextExit) {
-                nextExit = enteredCar[1];
+            for (int j = i + 1; j < cars.size(); j++) {
+                if (cars.get(j)[0] <= exit) {
+                    cars.remove(j);
+                    j--;
+                }
             }
         }
-
-        if (nextExit != Integer.MAX_VALUE) {
-            answer++;
-        }
-
 
         return answer;
     }
 }
 
-
 public class 단속카메라 {
     public static void main(String[] args) {
         PrintStream ps = System.out;
-        ps.println(new Solution().solution(new int[][]{{-20, 15}, {-14, -5}, {-18, -13}, {-5, -3}}));
-        ps.println(new Solution().solution(new int[][]{{-2, -1}, {1, 2}, {-3, 0}}));
+        ps.println(new Solution().solution(new int[][]{{0, 1}, {0,1}, {1, 2}}));
     }
 }
