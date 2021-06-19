@@ -34,14 +34,16 @@ public class Main {
         Trie trie = new Trie();
 
         for (String phoneNumber : phoneNumbers) {
-            trie.add(phoneNumber.split(""));
-        }
-
-        for (String phoneNumber : phoneNumbers) {
-            if (trie.findDuplicated(phoneNumber.split(""))) {
+            if(!trie.add(phoneNumber.split(""))) {
                 return "NO";
             }
         }
+
+//        for (String phoneNumber : phoneNumbers) {
+//            if (trie.findDuplicated(phoneNumber.split(""))) {
+//                return "NO";
+//            }
+//        }
 
         return "YES";
     }
@@ -50,8 +52,8 @@ public class Main {
 class Trie {
     private TrieNode root = new TrieNode();
 
-    public void add(String[] number) {
-        root.add(number, 0);
+    public boolean add(String[] number) {
+        return root.add(number, 0);
     }
 
     public boolean findDuplicated(String[] number) {
@@ -61,13 +63,25 @@ class Trie {
 
 class TrieNode {
     private Map<String, TrieNode> children = new HashMap<>();
+    private boolean hasEndNumber;
 
-    public void add(String[] number, int index) {
+    public boolean add(String[] number, int index) {
+        if (hasEndNumber) {
+            return false;
+        }
+
         if (index < number.length) {
             TrieNode child = children.getOrDefault(number[index], new TrieNode());
             children.put(number[index], child);
-            child.add(number, index + 1);
+            if (!child.add(number, index + 1)) {
+                return false;
+            }
+        } else {
+            hasEndNumber = true;
+            return children.size() == 0;
         }
+
+        return true;
     }
 
     private boolean hasChildren(String key) {
