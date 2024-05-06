@@ -56,8 +56,8 @@ class Main {
 //        System.out.println(operators);
 
         // 연산자 순열 구하기
-        List<List<String>> operatorPermutations = new ArrayList<>();
-        permutation(operators.size(), operators.size(), 0, 0, operators, new String[operators.size()], new boolean[operators.size()], operatorPermutations);
+        List<List<String>> operatorPermutations = Permutation.of(operators.size(), operators.size(), operators);
+
 //        operatorPermutation.forEach(System.out::println);
 
         // 연산자 반복하면서 min max 구하기
@@ -86,18 +86,54 @@ class Main {
         System.out.println(min);
     }
 
-    static void permutation(int n, int r, int p, int cur, List<String> target, String[] temp, boolean[] visited, List<List<String>> result) {
-        if (cur == r) {
-            result.add(Arrays.stream(temp).collect(Collectors.toList()));
-        } else {
-            for (int i = 0; i < n; i++) {
-                if (!visited[i]) {
-                    visited[i] = true;
-                    temp[cur] = target.get(i);
-                    cur++;
-                    permutation(n, r, p, cur, target, temp, visited, result);
-                    cur--;
-                    visited[i] = false;
+    static class Permutation {
+        int n;
+        int r;
+        int cur;
+        List<String> target;
+        String[] temp;
+        boolean[] visited;
+        List<List<String>> result;
+
+        private Permutation(int n, int r, int cur, List<String> target, String[] temp, boolean[] visited, List<List<String>> result) {
+            this.n = n;
+            this.r = r;
+            this.cur = cur;
+            this.target = target;
+            this.temp = temp;
+            this.visited = visited;
+            this.result = result;
+        }
+
+        public static List<List<String>> of(int n, int r, List<String> target) {
+            Permutation permutation = new Permutation(
+                    n,
+                    r,
+                    0,
+                    target,
+                    new String[target.size()],
+                    new boolean[target.size()],
+                    new ArrayList<>()
+            );
+
+            permutation.calculate();
+
+            return permutation.result;
+        }
+
+        private void calculate() {
+            if (cur == r) {
+                result.add(Arrays.stream(temp).collect(Collectors.toList()));
+            } else {
+                for (int i = 0; i < n; i++) {
+                    if (!visited[i]) {
+                        visited[i] = true;
+                        temp[cur] = target.get(i);
+                        cur++;
+                        calculate();
+                        cur--;
+                        visited[i] = false;
+                    }
                 }
             }
         }
