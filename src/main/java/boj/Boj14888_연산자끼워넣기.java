@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /*
 
@@ -56,86 +55,77 @@ class Main {
 //        System.out.println(operators);
 
         // 연산자 순열 구하기
-        List<List<String>> operatorPermutations = Permutation.of(operators.size(), operators.size(), operators);
+        MinMaxCalculator calculator = MinMaxCalculator.of(A, operators);
 
-//        operatorPermutation.forEach(System.out::println);
-
-        // 연산자 반복하면서 min max 구하기
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-        for (List<String> operatorPermutation : operatorPermutations) {
-            int result = A[0];
-            for (int i = 0; i < operatorPermutation.size(); i++) {
-                String operator = operatorPermutation.get(i);
-
-                if (operator.equals("+")) {
-                    result += A[i + 1];
-                } else if (operator.equals("-")) {
-                    result -= A[i + 1];
-                } else if (operator.equals("*")) {
-                    result *= A[i + 1];
-                } else if (operator.equals("/")) {
-                    result /= A[i + 1];
-                }
-            }
-            max = Integer.max(max, result);
-            min = Integer.min(min, result);
-        }
-
-        System.out.println(max);
-        System.out.println(min);
+        System.out.println(calculator.max);
+        System.out.println(calculator.min);
     }
 
-    static class Permutation {
-        int n;
-        int r;
-        int cur;
-        List<String> target;
-        String[] temp;
-        boolean[] visited;
-        List<List<String>> result;
+    static class MinMaxCalculator {
+        private final int n;
+        private final int r;
+        private final int[] numbers;
+        private final List<String> operators;
+        private final boolean[] visited;
 
-        private Permutation(int n, int r, int cur, List<String> target, String[] temp, boolean[] visited, List<List<String>> result) {
+        private int cur = 0;
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+
+        private MinMaxCalculator(int n, int r, int[] numbers, List<String> operators, boolean[] visited) {
             this.n = n;
             this.r = r;
-            this.cur = cur;
-            this.target = target;
-            this.temp = temp;
+            this.numbers = numbers;
+            this.operators = operators;
             this.visited = visited;
-            this.result = result;
         }
 
-        public static List<List<String>> of(int n, int r, List<String> target) {
-            Permutation permutation = new Permutation(
-                    n,
-                    r,
-                    0,
-                    target,
-                    new String[target.size()],
-                    new boolean[target.size()],
-                    new ArrayList<>()
+        public static MinMaxCalculator of(int[] numbers, List<String> operators) {
+            int operatorsSize = operators.size();
+            MinMaxCalculator minMaxCalculator = new MinMaxCalculator(
+                    operatorsSize,
+                    operatorsSize,
+                    numbers,
+                    operators,
+                    new boolean[operatorsSize]
             );
 
-            permutation.calculate();
+            minMaxCalculator.calculateUsingPermutation(numbers[0]);
 
-            return permutation.result;
+            return minMaxCalculator;
         }
 
-        private void calculate() {
+        private void calculateUsingPermutation(int currentValue) {
             if (cur == r) {
-                result.add(Arrays.stream(temp).collect(Collectors.toList()));
+                max = Integer.max(max, currentValue);
+                min = Integer.min(min, currentValue);
             } else {
                 for (int i = 0; i < n; i++) {
                     if (!visited[i]) {
                         visited[i] = true;
-                        temp[cur] = target.get(i);
+                        int currentResult = calculate(currentValue, operators.get(i), numbers[cur + 1]);
                         cur++;
-                        calculate();
+                        calculateUsingPermutation(currentResult);
                         cur--;
                         visited[i] = false;
                     }
                 }
             }
+        }
+
+        private int calculate(int currentValue, String operator, int operand) {
+            int result = currentValue;
+            if (operator.equals("+")) {
+                result += operand;
+            } else if (operator.equals("-")) {
+                result -= operand;
+            } else if (operator.equals("*")) {
+                result *= operand;
+            } else if (operator.equals("/")) {
+                result /= operand;
+            }
+
+            return result;
         }
     }
 }
