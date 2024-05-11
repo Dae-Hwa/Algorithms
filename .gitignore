@@ -27,4 +27,8 @@ hs_err_pid*
 *.iml
 
 **/out
+<<<<<<< HEAD
 **/build
+=======
+**/build
+>>>>>>> main
