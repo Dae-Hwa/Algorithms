@@ -83,7 +83,6 @@ class Main {
         class IndexMapping {
             final int a;
             final int indexBeforeSort;
-            int indexAfterSort;
 
             public IndexMapping(int a, int indexBeforeSort) {
                 this.a = a;
@@ -96,18 +95,16 @@ class Main {
             indexMappings.add(new IndexMapping(A[i], i));
         }
         indexMappings.sort(Comparator.comparingInt(it -> it.a));
-
+        
+        int[] result = new int[N];
         for (int i = 0; i < indexMappings.size(); i++) {
-            indexMappings.get(i).indexAfterSort = i;
+            result[indexMappings.get(i).indexBeforeSort] = i;
         }
 
-        indexMappings.sort(Comparator.comparingInt(it -> it.indexBeforeSort));
-
-        String resultMessage = indexMappings.stream()
-                .map(it -> String.valueOf(it.indexAfterSort))
+        String resultMessage = Arrays.stream(result)
+                .mapToObj(it -> String.valueOf(it))
                 .collect(Collectors.joining(" "));
         System.out.println(resultMessage);
-
     }
 }
 
