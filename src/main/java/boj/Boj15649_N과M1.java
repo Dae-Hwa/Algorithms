@@ -1,12 +1,7 @@
 package boj;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.io.*;
+import java.util.*;
 
 class Main {
 
@@ -25,31 +20,6 @@ class Main {
         int N = Integer.parseInt(input[0]);
         int M = Integer.parseInt(input[1]);
 
-        List<List<Integer>> result = new ArrayList<>();
-        permutation(N, 0, M, new int[M], new boolean[N], result);
-
-        System.out.println(
-                result.stream()
-                        .map(it -> it.stream().map(Object::toString).collect(Collectors.joining(" ")))
-                        .collect(Collectors.joining(System.lineSeparator()))
-        );
-    }
-
-    static void permutation(int n, int p, int r, int[] temp, boolean[] visited, List<List<Integer>> result) {
-        if (p == r) {
-            result.add(Arrays.stream(temp).boxed().collect(Collectors.toList()));
-        } else {
-            for (int i = 0; i < n; i++) {
-                if (!visited[i]) {
-                    visited[i] = true;
-                    temp[p] = i + 1;
-                    p++;
-                    permutation(n, p, r, temp, visited, result);
-                    p--;
-                    visited[i] = false;
-                }
-            }
-        }
     }
 }
 
