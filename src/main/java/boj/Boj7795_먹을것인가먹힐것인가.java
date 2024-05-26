@@ -72,7 +72,6 @@ class Main {
     }
 
     static int bSearch(List<Integer> A, List<Integer> B) {
-        A.sort(Comparator.naturalOrder());
         B.sort(Comparator.naturalOrder());
 
         int count = 0;
@@ -86,7 +85,6 @@ class Main {
             int last = 0;
             while (left < right - 1) {
                 int cur = (left + right) / 2;
-                // System.out.println(cur);
                 int b = B.get(cur);
 
                 if (a <= b) {
@@ -99,7 +97,9 @@ class Main {
             }
             // System.out.println("A: " + a + ", B: " + B.get(last) + ", last: " + last);
             count += last + 1;
-            if (a <= B.get(last)) count--;
+            if (a <= B.get(last)) {
+                count--;
+            }
         }
 
         return count;
