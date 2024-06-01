@@ -35,19 +35,16 @@ class Main {
         int target = 0;
         for (int i = 0; i < solutions.size(); i++) {
             var sourceSolution = solutions.get(i);
-            int left = 0;
-            int right = solutions.size() - 1;
+            int left = i + 1;
+            int right = solutions.size();
 
             while (left < right) {
                 int cur = (left + right) / 2;
                 int targetSolutionCandidate = solutions.get(cur);
                 int currentSolution = sourceSolution + targetSolutionCandidate;
-
                 if (Math.abs(currentSolution) < Math.abs(source + target)) {
-                    if (i != cur) {
-                        source = sourceSolution;
-                        target = targetSolutionCandidate;
-                    }
+                    source = sourceSolution;
+                    target = targetSolutionCandidate;
                 }
 
                 // 결과가 음수면 오른쪽으로 가야함. 양수면 왼쪽으로 가야함
